@@ -38,10 +38,10 @@ def aggregate_data(data, agg_lvl_col, agg_dict):
 
     return data_agg
 
-def convert_to_numeric(data, numeric_dic):
+def convert_to_numeric(data, numeric_dict):
     #loop through col_list to convert to numeric
-    for col in numeric_dic:
-        precision = numeric_dic[col]
+    for col in numeric_dict:
+        precision = numeric_dict[col]
         #print(col, precision)
         #check if there is a downcast precision specified
         if precision is None:
@@ -56,14 +56,16 @@ def main():
     data_file_path = "sample_data.csv"
     data = pd.read_csv(data_file_path)
 
-    numeric_dic = {
+    numeric_dict = {
         "4G Payload (GB)": "float",
         "DL PRB Usage(%)": "float",
         "Average Users": "float"
     }
 
     #ensure all columns with aggregation that involves arithmetics are numeric, downcast to a precision if specified
-    data = convert_to_numeric(data, numeric_dic)
+    data = convert_to_numeric(data, numeric_dict)
+
+    agg_lvl_col = "eNodeB Name"
 
     agg_dict={
         "4G Payload (GB)": ["sum"],
@@ -73,7 +75,7 @@ def main():
         "Cell Name": ["list", "count", "nunique"]
     }
 
-    data_agg = aggregate_data(data.copy(deep=True), "eNodeB Name", agg_dict)
+    data_agg = aggregate_data(data.copy(deep=True), agg_lvl_col, agg_dict)
     data_agg.to_csv("data_aggregator_output.csv", index=False)
 
 if __name__ == '__main__':
